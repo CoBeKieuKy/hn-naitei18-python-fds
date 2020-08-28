@@ -87,7 +87,6 @@
 }
 
 .profile-usermenu ul li a {
-    color: #93a3b5;
     font-size: 14px;
     font-weight: 400;
 }
@@ -97,20 +96,37 @@
     font-size: 20px;
 }
 
-.profile-usermenu ul li a:hover {
-    background-color: #fafcfd;
-    color: #5b9bd1;
+/*.profile-usermenu ul li a:hover {*/
+/*    background-color: #fafcfd;*/
+/*    color: #5b9bd1;*/
+/*}*/
+
+/*.profile-usermenu ul li.active {*/
+/*    border-bottom: none;*/
+/*    color: #5b9bd1;*/
+/*    background-color: #f6f9fb;*/
+/*    border-left: 2px solid #5b9bd1;*/
+/*    margin-left: -2px;*/
+/*}*/
+
+/*.profile-usermenu ul li.active a {*/
+/*    color: #5b9bd1;*/
+/*    background-color: #f6f9fb;*/
+/*    border-left: 2px solid #5b9bd1;*/
+/*    margin-left: -2px;*/
+/*}*/
+
+.btn_profile {
+    cursor: pointer;
+    background-color: white;
 }
 
-.profile-usermenu ul li.active {
-    border-bottom: none;
-}
-
-.profile-usermenu ul li.active a {
+.activated {
     color: #5b9bd1;
     background-color: #f6f9fb;
-    border-left: 2px solid #5b9bd1;
-    margin-left: -2px;
+
+    border-left: 5px solid #5b9bd1;
+    margin-left: -5px;
 }
 
 .header_right {
@@ -165,6 +181,7 @@
     font-weight: 600;
     text-align: center;
     margin-bottom: 2em;
+    height: 50px;
 }
 
 .language {

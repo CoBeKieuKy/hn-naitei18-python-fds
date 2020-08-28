@@ -35,7 +35,7 @@
         <div class="col-md-9 cart-items">
             <h1 class="continue">My Cart</h1>
             {% for key,item in request.session.cart.items %}
-            <div class="item">
+            <div class="order_list_items">
                 <div class="cart-header center_inside">
 
                     <div>
@@ -49,12 +49,12 @@
                             <img src="{{ item.image }}" class="img-responsive" alt=""/>
                         </div>
                         <div class="cart-item-info">
-                            <h3><a href="#">{{ item.name }}</a></h3>
+                            <h2><a href="{% url 'product_details' item.product_id %}">{{ item.name }}</a></h2>
                             <p>Category: {{ item.category }}</p>
                             <text> {{ item.description }}</text>
                             <ul class="qty">
-                                <li><p>Price per serve : ${{ item.price }}</p></li>
-                                <li><p>Quantity : {{ item.quantity }}</p></li>
+                                <li><h3>Price per serve : ${{ item.price }}</h3></li>
+                                <li><h3>Quantity : {{ item.quantity }}</h3></li>
                             </ul>
                         </div>
                     </div>
@@ -94,9 +94,6 @@
             success: function (r) {
                 if (r == 'success')
                     alert('Your order has been sent!');
-                else
-                    alert('Your order exceeds the quantity!!!\n\nItems that exceed the quantity : '+r);
-                window.location.href = "{% url 'order' %}";
             },
             error: function (r) {
                 window.location.href = "{% url 'index' %}";

@@ -17,26 +17,20 @@
                                                                               class="img-responsive" alt=""></a>
                         <div class="special-info grid_1 simpleCart_shelfItem">
                             <h3>{{ product.name }}</h3>
-                            <div class="item_add"><span
-                                    class="item_price"><h6>Price per server: ${{ product.price}}</h6></span></div>
-                            <div><h6>Product quantity: {{ product.quantity}}</h6></div>
-                            {% if product.quantity > 0 %}
                             <div class="item_add">
                                 <span class="item_price">
-                                        <form method="get" action="{% url 'add_to_cart' product.id %}"
-                                              class="add_to_cart"
-                                              name="{{product.name}}">
-                                            <input class="add-to-cart-button" type="submit" value="Add to Cart">
-                                        </form>
+                                    <h6>Price per serve: ${{ product.price}}</h6>
                                 </span>
                             </div>
-                            {% else %}
                             <div class="item_add">
                                 <span class="item_price">
-                                    <h5 style="color: red">Sold Out</h5>
+                                    <form method="get" action="{% url 'add_to_cart' product.id %}"
+                                          class="add_to_cart"
+                                          name="{{product.name}}">
+                                        <input class="add-to-cart-button" type="submit" value="Add to Cart">
+                                    </form>
                                 </span>
                             </div>
-                            {% endif %}
                         </div>
                     </li>
                     {% endfor %}

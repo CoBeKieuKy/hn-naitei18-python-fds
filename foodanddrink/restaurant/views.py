@@ -32,22 +32,24 @@ from django.conf import settings
 
 UserModel = get_user_model()
 DEFAULT_AVATAR = 'media/profile_pics/default.jpg'
+
+
 def change_language(request):
-  response = HttpResponseRedirect('/')
-  if request.method == 'POST':
-      language = request.POST.get('language')
-      if language:
-          if language != settings.LANGUAGE_CODE and [lang for lang in settings.LANGUAGES if lang[0] == language]:
-              redirect_path = f'/{language}/'
-          elif language == settings.LANGUAGE_CODE:
-              redirect_path = '/'
-          else:
-              return response
-          from django.utils import translation
-          translation.activate(language)
-          response = HttpResponseRedirect(redirect_path)
-          response.set_cookie(settings.LANGUAGE_COOKIE_NAME, language)
-  return response
+    response = HttpResponseRedirect('/')
+    if request.method == 'POST':
+        language = request.POST.get('language')
+        if language:
+            if language != settings.LANGUAGE_CODE and [lang for lang in settings.LANGUAGES if lang[0] == language]:
+                redirect_path = f'/{language}/'
+            elif language == settings.LANGUAGE_CODE:
+                redirect_path = '/'
+            else:
+                return response
+            from django.utils import translation
+            translation.activate(language)
+            response = HttpResponseRedirect(redirect_path)
+            response.set_cookie(settings.LANGUAGE_COOKIE_NAME, language)
+    return response
 
 
 def index(request):
@@ -193,26 +195,15 @@ def make_order(request):
 
         order_id = order.id
 
-        out_number_items = {}
         for key, item in request.session['cart'].items():
             product = Product.objects.get(pk=item['product_id'])
-            if product.quantity < item['quantity']:
-                # cart.clear()
-                out_number_items[item['name'] + " "] = item['quantity'] - product.quantity
-                item['quantity'] = 1
-                item['price_of_all'] = float(item['price'])
-        if bool(out_number_items):
-            return HttpResponse(out_number_items)
-        else:
+            Product.objects.filter(pk=item['product_id']).update(quantity=product.quantity - item['quantity'])
+            ordered_item = OrderDetail(price=Decimal(item['price']), amount=item['quantity'],
+                                       product_id=item['product_id'], order_id=order_id)
+            ordered_item.save()
+        cart.clear()
 
-            for key, item in request.session['cart'].items():
-                product = Product.objects.get(pk=item['product_id'])
-                Product.objects.filter(pk=item['product_id']).update(quantity=product.quantity - item['quantity'])
-                ordered_item = OrderDetail(price=Decimal(item['price']), amount=item['quantity'],
-                                           product_id=item['product_id'], order_id=order_id)
-                ordered_item.save()
-            cart.clear()
-        return HttpResponse('success')
+    return HttpResponse('success')
 
 
 def item_decrement(request, pk):
@@ -368,27 +359,45 @@ def filter_price(request, pk):
 
 def approved_order(request):
     customer = Customer.objects.get(user_id=request.user.id)
-    order = Order.objects.filter(customer_id=customer).filter(status='a')
+    order = Order.objects.filter(customer_id=customer.id).filter(status='a')
+
+    paginator = Paginator(order, 3)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
     context = {
         'order': order,
+        'page_obj': page_obj,
     }
     return render(request, 'restaurant/order_list.html', context)
 
 
 def past_order(request):
     customer = Customer.objects.get(user_id=request.user.id)
-    order = Order.objects.filter(customer_id=customer).filter(Q(status='c') | Q(status='f'))
+    order = Order.objects.filter(customer_id=customer.id).filter(Q(status='c') | Q(status='f'))
+
+    paginator = Paginator(order, 3)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
     context = {
         'order': order,
+        'page_obj': page_obj,
     }
     return render(request, 'restaurant/order_list.html', context)
 
 
 def pending_order(request):
     customer = Customer.objects.get(user_id=request.user.id)
-    order = Order.objects.filter(customer_id=2).filter(status='p')
+    order = Order.objects.filter(customer_id=customer.id).filter(status='p')
+
+    paginator = Paginator(order, 3)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
     context = {
         'order': order,
+        'page_obj': page_obj,
     }
     return render(request, 'restaurant/order_list.html', context)
 
